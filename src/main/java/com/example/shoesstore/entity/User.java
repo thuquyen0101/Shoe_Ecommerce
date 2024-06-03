@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
 import java.util.List;
@@ -22,6 +23,10 @@ public class User {
     private Long id;
     @Column(name = "name")
     private String name;
+    @Column(name = "username")
+    private String username;
+    @Column(name = "password")
+    private String password;
     @Column(name = "gender")
     private Boolean gender;
     @Column(name = "status")
@@ -33,6 +38,7 @@ public class User {
     @Column(name = "gg_account")
     private String gg_account;
     @Column(name = "created_at")
+    @CreationTimestamp
     private Date createdAt;
     @Column(name = "created_by")
     private String createdBy;
