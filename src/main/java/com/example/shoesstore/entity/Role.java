@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -31,4 +32,5 @@ public class Role {
             inverseJoinColumns = {@JoinColumn(name = "id_user")}
     )
     private List<User> listUser;
+
 }
