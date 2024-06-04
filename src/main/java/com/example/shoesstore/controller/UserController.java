@@ -2,10 +2,10 @@ package com.example.shoesstore.controller;
 
 import com.example.shoesstore.constant.CodeStatusConstants;
 import com.example.shoesstore.dto.request.UserCreateRequest;
+import com.example.shoesstore.dto.request.UserUpdateRequest;
 import com.example.shoesstore.dto.response.ApiResponse;
 import com.example.shoesstore.dto.response.UserResponse;
 import com.example.shoesstore.service.UserService;
-import jakarta.persistence.Id;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +25,7 @@ public class UserController {
     UserService userService;
 
     @PostMapping("/create")
+    @PreAuthorize("hasRole('ADMIN')")
     public ApiResponse<UserResponse> createUser(@RequestBody @Valid UserCreateRequest userCreateRequest) {
         return ApiResponse.<UserResponse>builder()
                 .code(CodeStatusConstants.OK)
@@ -32,8 +33,6 @@ public class UserController {
                 .result(userService.createUser(userCreateRequest))
                 .build();
     }
-
-
 
     @GetMapping("/all")
     @PreAuthorize("hasRole('USER')")
@@ -46,6 +45,7 @@ public class UserController {
     }
 
     @DeleteMapping("/delete/{userId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ApiResponse<String> deleteUser(@PathVariable long userId) {
         userService.deleteUser(userId);
         return ApiResponse.<String>builder()
@@ -63,4 +63,11 @@ public class UserController {
                 .build();
     }
 
+    @PutMapping("update/{userId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    ApiResponse<UserResponse> updateUser(@PathVariable long userId, @RequestBody @Valid UserUpdateRequest request) {
+        return ApiResponse.<UserResponse>builder()
+                .result(userService.updateUser(userId, request))
+                .build();
+    }
 }
