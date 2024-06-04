@@ -25,6 +25,7 @@ public class RoleController {
     RoleService roleService;
 
     @PostMapping("/create")
+    @PreAuthorize("hasRole('ADMIN')")
     ApiResponse<RoleResponse> createRole(@RequestBody @Valid RoleCreateRequest roleCreateRequest) {
         return ApiResponse.<RoleResponse>builder()
                 .code(CodeStatusConstants.CREATED)
@@ -42,6 +43,7 @@ public class RoleController {
     }
 
     @DeleteMapping("/delete/{role}")
+    @PreAuthorize("hasRole('ADMIN')")
     ApiResponse<String> delete(@PathVariable String role) {
         roleService.delete(role);
         return ApiResponse.<String>builder()

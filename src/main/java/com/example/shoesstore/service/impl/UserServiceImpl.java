@@ -3,6 +3,7 @@ package com.example.shoesstore.service.impl;
 import com.example.shoesstore.constant.PredefinedRole;
 import com.example.shoesstore.constant.UserStatusConstant;
 import com.example.shoesstore.dto.request.UserCreateRequest;
+import com.example.shoesstore.dto.request.UserUpdateRequest;
 import com.example.shoesstore.dto.response.UserResponse;
 import com.example.shoesstore.entity.Role;
 import com.example.shoesstore.entity.User;
@@ -15,6 +16,7 @@ import com.example.shoesstore.service.UserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -62,6 +64,18 @@ public class UserServiceImpl implements UserService {
                 .findById(userId).orElseThrow(
                         () -> new AppException(ErrorCode.USER_NOT_FOUND))
         );
+    }
+
+    @Override
+    public UserResponse updateUser(long userId, UserUpdateRequest request) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new AppException(ErrorCode.USER_EXISTED));
+        userMapper.updateUser(user, request);
+        user.setName(request.getName());
+        user.setAddress(request.getAddress());
+        user.setGender(request.getGender());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        return userMapper.toResponse(userRepository.save(user));
     }
 
 }

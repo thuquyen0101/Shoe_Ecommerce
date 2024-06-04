@@ -140,7 +140,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private String generateToken(User user) {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
 
-        JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder().subject(user.getUsername()).issuer("nguyenhailong").issueTime(new Date()).expirationTime(new Date(Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS).toEpochMilli())).jwtID(UUID.randomUUID().toString()).claim("userId", user.getId()).claim("name", user.getName()).claim("userName", user.getUsername()).claim("scope", buildScope(user)).build();
+        JWTClaimsSet jwtClaimsSet = new JWTClaimsSet
+                .Builder().subject(
+                        user.getUsername())
+                .issuer("nguyenhailong")
+                .issueTime(new Date())
+                .expirationTime(new Date(Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS)
+                        .toEpochMilli())).jwtID(UUID.randomUUID().toString())
+                .claim("userId", user.getId()).claim("name", user.getName())
+                .claim("userName", user.getUsername()).claim("scope", buildScope(user)).build();
 
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
 
