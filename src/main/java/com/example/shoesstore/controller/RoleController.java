@@ -5,6 +5,7 @@ import com.example.shoesstore.dto.request.RoleCreateRequest;
 import com.example.shoesstore.dto.response.ApiResponse;
 import com.example.shoesstore.dto.response.RoleResponse;
 import com.example.shoesstore.service.RoleService;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -24,7 +25,7 @@ public class RoleController {
     RoleService roleService;
 
     @PostMapping("/create")
-    ApiResponse<RoleResponse> createRole(@RequestBody RoleCreateRequest roleCreateRequest) {
+    ApiResponse<RoleResponse> createRole(@RequestBody @Valid RoleCreateRequest roleCreateRequest) {
         return ApiResponse.<RoleResponse>builder()
                 .code(CodeStatusConstants.CREATED)
                 .message("Success")
