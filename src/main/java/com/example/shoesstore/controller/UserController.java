@@ -6,6 +6,7 @@ import com.example.shoesstore.dto.response.ApiResponse;
 import com.example.shoesstore.dto.response.UserResponse;
 import com.example.shoesstore.service.UserService;
 import jakarta.persistence.Id;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -24,7 +25,7 @@ public class UserController {
     UserService userService;
 
     @PostMapping("/create")
-    public ApiResponse<UserResponse> createUser(@RequestBody UserCreateRequest userCreateRequest) {
+    public ApiResponse<UserResponse> createUser(@RequestBody @Valid UserCreateRequest userCreateRequest) {
         return ApiResponse.<UserResponse>builder()
                 .code(CodeStatusConstants.OK)
                 .message("Success")
