@@ -7,7 +7,7 @@
  # Prerequisites
  - Java SDK 21
  - MySQL server
- - 
+
  # Start application
  - mvn spring-boot:run
  # Build application
