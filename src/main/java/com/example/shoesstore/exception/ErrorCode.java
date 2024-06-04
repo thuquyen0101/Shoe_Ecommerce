@@ -13,6 +13,7 @@ public enum ErrorCode {
     INVALID_KEY(400, "Invalid key", HttpStatus.BAD_REQUEST),
     UNAUTHORIZED(401, "Unauthorized Error", HttpStatus.UNAUTHORIZED),
     UNAUTHENTICATED(401, "Unauthenticated Error", HttpStatus.UNAUTHORIZED),
+    CATEGORY_EXISTED(400, "Category existed", HttpStatus.BAD_REQUEST),
     ;
 
 
