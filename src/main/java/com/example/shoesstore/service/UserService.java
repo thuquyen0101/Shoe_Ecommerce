@@ -18,4 +18,6 @@ public interface UserService {
 
     UserResponse updateUser(long userId, UserUpdateRequest userUpdateRequest);
 
+    UserResponse getMyInfo();
+
 }

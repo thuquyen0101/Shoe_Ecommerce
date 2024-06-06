@@ -8,6 +8,8 @@ public class EndPoints {
             "/api/v1/user/create",
             "/api/v1/auth/refresh",
             "/api/v1/auth/logout",
-            "/api/v1/auth/introspect"
+            "/api/v1/auth/introspect",
+            "/api/v1/auth/facebook-login",
+            "/api/v1/auth/google-login"
     };
 }
