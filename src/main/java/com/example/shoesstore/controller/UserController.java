@@ -70,4 +70,11 @@ public class UserController {
                 .result(userService.updateUser(userId, request))
                 .build();
     }
+
+    @GetMapping("/getMyInfo")
+    ApiResponse<UserResponse> getMyInfo() {
+        return ApiResponse.<UserResponse>builder()
+                .result(userService.getMyInfo())
+                .build();
+    }
 }

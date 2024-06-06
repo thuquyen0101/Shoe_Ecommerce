@@ -14,6 +14,13 @@ public enum ErrorCode {
     UNAUTHORIZED(401, "Unauthorized Error", HttpStatus.UNAUTHORIZED),
     UNAUTHENTICATED(401, "Unauthenticated Error", HttpStatus.UNAUTHORIZED),
     CATEGORY_EXISTED(400, "Category existed", HttpStatus.BAD_REQUEST),
+    INVALID_TOKEN_GOOGLE(400, "Invalid token google", HttpStatus.BAD_REQUEST),
+    AUTHENTICATION_FAILED(401, "Authentication failed", HttpStatus.UNAUTHORIZED),
+    UNCATEGORIZED_EXCEPTION(400, "Uncategorized exception", HttpStatus.BAD_REQUEST),
+    INVALID_TOKEN(400, "Invalid token", HttpStatus.BAD_REQUEST),
+    JWT_ERROR(400, "JWT error", HttpStatus.BAD_REQUEST),
+    INVALID_JWT(400, "Invalid JWT", HttpStatus.BAD_REQUEST),
+
     ;
 
 

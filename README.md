@@ -6,8 +6,8 @@
  - DBMS: MySQL
  # Prerequisites
  - Java SDK 21
- - A MySQL server
- - 
+ - MySQL server
+
  # Start application
  - mvn spring-boot:run
  # Build application
