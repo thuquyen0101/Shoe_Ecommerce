@@ -22,6 +22,7 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_category")
     private Long id;
+
     @Column(name = "code", unique = true, nullable = false)
     private String code;
     @Column(name = "category_name")

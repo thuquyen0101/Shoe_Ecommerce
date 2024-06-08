@@ -1,23 +1,20 @@
 package com.example.shoesstore.controller;
 
 import com.example.shoesstore.constant.CodeStatusConstants;
-import com.example.shoesstore.dto.request.AuthenticationRequest;
-import com.example.shoesstore.dto.request.IntrospectRequest;
-import com.example.shoesstore.dto.request.LogoutRequest;
-import com.example.shoesstore.dto.request.RefreshRequest;
+import com.example.shoesstore.dto.request.*;
 import com.example.shoesstore.dto.response.ApiResponse;
 import com.example.shoesstore.dto.response.AuthenticationResponse;
 import com.example.shoesstore.dto.response.IntrospectResponse;
 import com.example.shoesstore.service.AuthenticationService;
+import com.example.shoesstore.service.FacebookAuthService;
+import com.example.shoesstore.service.GoogleAuthService;
 import com.nimbusds.jose.JOSEException;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 
@@ -28,6 +25,8 @@ import java.text.ParseException;
 public class AuthenticationController {
 
     AuthenticationService authenticationService;
+    FacebookAuthService facebookAuthService;
+    GoogleAuthService googleAuthService;
 
     @PostMapping("/login")
     ApiResponse<AuthenticationResponse> authenticate(@RequestBody @Valid AuthenticationRequest request) {
@@ -64,6 +63,28 @@ public class AuthenticationController {
                 .message("Logout success")
                 .build();
     }
+
+
+    @PostMapping("/facebook-login")
+    public ApiResponse<AuthenticationResponse> facebookLogin(@RequestBody FacebookLoginRequest facebookLoginRequest) {
+        AuthenticationResponse response = facebookAuthService.authenticateFacebookUser(facebookLoginRequest);
+        return ApiResponse.<AuthenticationResponse>builder()
+                .code(CodeStatusConstants.OK)
+                .result(response)
+                .build();
+    }
+
+    @PostMapping("/google-login")
+    ApiResponse<AuthenticationResponse> outboundAuthenticate(
+            @RequestParam("code") String code
+    ){
+        var result = googleAuthService.authenticateGoogleUser(code);
+        return ApiResponse.<AuthenticationResponse>builder().result(result).build();
+    }
+
+
+
+
 
 
 }

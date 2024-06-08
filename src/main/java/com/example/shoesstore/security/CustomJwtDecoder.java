@@ -1,11 +1,14 @@
 package com.example.shoesstore.security;
 
 import com.example.shoesstore.dto.request.IntrospectRequest;
+import com.example.shoesstore.exception.AppException;
+import com.example.shoesstore.exception.ErrorCode;
 import com.example.shoesstore.service.AuthenticationService;
 import com.nimbusds.jose.JOSEException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -36,9 +39,11 @@ public class CustomJwtDecoder implements JwtDecoder {
             var response = authenticationService.introspect(
                     IntrospectRequest.builder().token(token).build());
 
-            if (!response.isValid()) log.info("Token is not valid");
-        } catch (JOSEException | ParseException e) {
-            throw new JwtException(e.getMessage());
+            if (!response.isValid()) {
+                log.info("Token is not valid");
+            }
+        } catch (JOSEException | ParseException | AuthenticationServiceException e) {
+              log.info("Invalid JWT token: Token is not valid");
         }
 
         if (Objects.isNull(nimbusJwtDecoder)) {
