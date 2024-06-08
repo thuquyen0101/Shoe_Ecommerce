@@ -3,9 +3,12 @@ package com.example.shoesstore.controller;
 import com.example.shoesstore.constant.CodeStatusConstants;
 import com.example.shoesstore.dto.request.CategoryCreateRequest;
 import com.example.shoesstore.dto.request.CategoryUpdateRequest;
+import com.example.shoesstore.dto.request.ColorCreateRequest;
+import com.example.shoesstore.dto.request.ColorUpdateRequest;
 import com.example.shoesstore.dto.response.ApiResponse;
 import com.example.shoesstore.dto.response.CategoryResponse;
-import com.example.shoesstore.service.CategoryService;
+import com.example.shoesstore.dto.response.ColorResponse;
+import com.example.shoesstore.service.ColorService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -16,78 +19,77 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/v1/category")
+@RequestMapping("api/v1/color")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
-public class CategoryController {
+public class ColorController {
 
-    CategoryService categoryService;
+    ColorService colorService;
 
     @PostMapping("/create")
     @PreAuthorize("hasRole('ADMIN')")
-    public ApiResponse<CategoryResponse> createCategory(@RequestBody @Valid CategoryCreateRequest categoryCreateRequest) {
-        return ApiResponse.<CategoryResponse>builder()
+    public ApiResponse<ColorResponse> createColor(@RequestBody @Valid ColorCreateRequest colorCreateRequest) {
+        return ApiResponse.<ColorResponse>builder()
                 .code(CodeStatusConstants.OK)
                 .message("Success")
-                .result(categoryService.createCategory(categoryCreateRequest))
+                .result(colorService.createColor(colorCreateRequest))
                 .build();
     }
 
     @GetMapping("/all")
-    public ApiResponse<Page<CategoryResponse>> getAllCategories(
+    public ApiResponse<Page<ColorResponse>> getAllColor(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "5") int size
     ) {
-        return ApiResponse.<Page<CategoryResponse>>builder()
+        return ApiResponse.<Page<ColorResponse>>builder()
                 .code(CodeStatusConstants.OK)
                 .message("Success")
-                .result(categoryService.getAllCategories(page, size))
+                .result(colorService.getAllColors(page, size))
                 .build();
     }
 
 
-    @GetMapping("getCategory/{categoryId}")
+    @GetMapping("getColorById/{colorId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ApiResponse<CategoryResponse> getCategoryById(@PathVariable long categoryId) {
-        return ApiResponse.<CategoryResponse>builder()
+    public ApiResponse<ColorResponse> getColorById(@PathVariable long colorId) {
+        return ApiResponse.<ColorResponse>builder()
                 .code(CodeStatusConstants.OK)
                 .message("Success")
-                .result(categoryService.getCategoryById(categoryId))
+                .result(colorService.getColorById(colorId))
                 .build();
     }
 
-    @PutMapping("/update/{categoryId}")
+    @PutMapping("/update/{colorId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ApiResponse<CategoryResponse> updateUser(@PathVariable long categoryId, @RequestBody @Valid CategoryUpdateRequest categoryUpdateRequest) {
-        return ApiResponse.<CategoryResponse>builder()
+    public ApiResponse<ColorResponse> updateUser(@PathVariable long colorId, @RequestBody @Valid ColorUpdateRequest colorUpdateRequest) {
+        return ApiResponse.<ColorResponse>builder()
                 .code(CodeStatusConstants.OK)
                 .message("Success")
-                .result(categoryService.updateCategory(categoryId, categoryUpdateRequest))
+                .result(colorService.updateColor(colorId, colorUpdateRequest))
                 .build();
     }
 
-    @PutMapping("/changeStatus/{categoryId}")
+    @PutMapping("/changeStatus/{colorId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ApiResponse<CategoryResponse> changeStatus(@PathVariable long categoryId) {
-        return ApiResponse.<CategoryResponse>builder()
+    public ApiResponse<ColorResponse> changeStatus(@PathVariable long colorId) {
+        return ApiResponse.<ColorResponse>builder()
                 .code(CodeStatusConstants.OK)
                 .message("Success")
-                .result(categoryService.changeStatus(categoryId))
+                .result(colorService.changeStatus(colorId))
                 .build();
     }
 
     @GetMapping("/search")
-    public ApiResponse<Page<CategoryResponse>> getCategoriesByNameContains(
+    public ApiResponse<Page<ColorResponse>> getCategoriesByNameContains(
             @RequestParam(value = "name") String name,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "5") int size
     ) {
-        return ApiResponse.<Page<CategoryResponse>>builder()
+        return ApiResponse.<Page<ColorResponse>>builder()
                 .code(CodeStatusConstants.OK)
                 .message("Success")
-                .result(categoryService.getCategoriesByNameContains(name, page, size))
+                .result(colorService.getColorsByNameContains(name, page, size))
                 .build();
     }
-
 }
