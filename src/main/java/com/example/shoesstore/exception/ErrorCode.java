@@ -20,6 +20,8 @@ public enum ErrorCode {
     INVALID_TOKEN(400, "Invalid token", HttpStatus.BAD_REQUEST),
     JWT_ERROR(400, "JWT error", HttpStatus.BAD_REQUEST),
     INVALID_JWT(400, "Invalid JWT", HttpStatus.BAD_REQUEST),
+    COLOR_EXISTED(400, "Color existed", HttpStatus.BAD_REQUEST),
+
 
     ;
 
