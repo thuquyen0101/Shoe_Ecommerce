@@ -1,13 +1,26 @@
 package com.example.shoesstore.dto.response;
 
-import lombok.AllArgsConstructor;
+
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class FacebookTokenValidationResponse {
-    private boolean isValid;
-    private String user_id;
+    private Data data;
+    @lombok.Data
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class Data {
+        private String app_id;
+        private String type;
+        private String application;
+        private long data_access_expires_at;
+        private long expires_at;
+        private Boolean is_valid;
+        private List<String> scopes;
+        private String user_id;
+    }
 }

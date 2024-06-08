@@ -7,6 +7,7 @@ import com.example.shoesstore.dto.response.FacebookTokenValidationResponse;
 import com.example.shoesstore.entity.User;
 import com.example.shoesstore.exception.AppException;
 import com.example.shoesstore.exception.ErrorCode;
+import com.example.shoesstore.httpclient.FacebookTokenClient;
 import com.example.shoesstore.repository.UserRepository;
 import com.example.shoesstore.service.FacebookAuthService;
 import com.nimbusds.jose.*;
@@ -36,7 +37,7 @@ public class FacebookAuthServiceImpl implements FacebookAuthService {
 
     UserRepository userRepository;
     WebClient.Builder webClientBuilder;
-
+    FacebookTokenClient facebookTokenClient;
     @Value("${facebook.app.access.token}")
     @NonFinal
     protected String APP_ACCESS_TOKEN;
@@ -59,29 +60,15 @@ public class FacebookAuthServiceImpl implements FacebookAuthService {
         try {
             String accessToken = facebookLoginRequest.getAccessToken();
             String userID = facebookLoginRequest.getUserID();
-
-            String url = "https://graph.facebook.com/debug_token?input_token=" + accessToken + "&access_token=" + APP_ACCESS_TOKEN;
-
-            FacebookTokenValidationResponse response = webClientBuilder.build()
-                    .get()
-                    .uri(url)
-                    .retrieve()
-                    .bodyToMono(FacebookTokenValidationResponse.class)
-                    .block();
-            log.info("urt {}", url);
-            log.info("");
-
-            if (response == null || !response.isValid()) {
-                log.info("response {}", response.getUser_id());
+            FacebookTokenValidationResponse response = facebookTokenClient.validateToken(accessToken, APP_ACCESS_TOKEN);
+            if (response == null || !response.getData().getIs_valid()) {
                 throw new AppException(ErrorCode.UNAUTHENTICATED);
             }
 
             Optional<User> optionalUser = userRepository.findByUsername(facebookLoginRequest.getProfile().getEmail());
             User user;
-
             if (optionalUser.isPresent()) {
                 user = optionalUser.get();
-                log.info("user {}", user);
             } else {
                 user = new User();
                 user.setUsername(facebookLoginRequest.getProfile().getEmail());
@@ -89,9 +76,9 @@ public class FacebookAuthServiceImpl implements FacebookAuthService {
                 user.setFb_account(userID);
                 userRepository.save(user);
             }
+
             String token = generateToken(user);
 
-            log.info("user id {}", user.getId());
             return AuthenticationResponse.builder().token(token).authenticated(true).build();
         } catch (Exception e) {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
@@ -102,15 +89,7 @@ public class FacebookAuthServiceImpl implements FacebookAuthService {
     private String generateToken(User user) {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
 
-        JWTClaimsSet jwtClaimsSet = new JWTClaimsSet
-                .Builder().subject(
-                        user.getUsername())
-                .issuer("nguyenhailong")
-                .issueTime(new Date())
-                .expirationTime(new Date(Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS)
-                        .toEpochMilli())).jwtID(UUID.randomUUID().toString())
-                .claim("userId", user.getId()).claim("name", user.getName())
-                .claim("userName", user.getUsername()).claim("scope", buildScope()).build();
+        JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder().subject(user.getUsername()).issuer("nguyenhailong").issueTime(new Date()).expirationTime(new Date(Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS).toEpochMilli())).jwtID(UUID.randomUUID().toString()).claim("userId", user.getId()).claim("name", user.getName()).claim("userName", user.getUsername()).claim("scope", buildScope()).build();
 
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
 
