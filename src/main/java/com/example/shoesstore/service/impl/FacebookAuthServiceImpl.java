@@ -20,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
@@ -50,8 +51,7 @@ public class FacebookAuthServiceImpl implements FacebookAuthService {
 
     @NonFinal
     @Value("${jwt.refreshable-duration}")
-    protected long REFRESHABLE_DURATION ;
-
+    protected long REFRESHABLE_DURATION;
 
 
     @Override
@@ -69,15 +69,19 @@ public class FacebookAuthServiceImpl implements FacebookAuthService {
                     .bodyToMono(FacebookTokenValidationResponse.class)
                     .block();
             log.info("urt {}", url);
+            log.info("");
 
-            if (response == null || !response.getData().isValid()) {
+            if (response == null || !response.isValid()) {
+                log.info("response {}", response.getUser_id());
                 throw new AppException(ErrorCode.UNAUTHENTICATED);
             }
 
             Optional<User> optionalUser = userRepository.findByUsername(facebookLoginRequest.getProfile().getEmail());
             User user;
+
             if (optionalUser.isPresent()) {
                 user = optionalUser.get();
+                log.info("user {}", user);
             } else {
                 user = new User();
                 user.setUsername(facebookLoginRequest.getProfile().getEmail());
@@ -85,15 +89,14 @@ public class FacebookAuthServiceImpl implements FacebookAuthService {
                 user.setFb_account(userID);
                 userRepository.save(user);
             }
-
             String token = generateToken(user);
 
+            log.info("user id {}", user.getId());
             return AuthenticationResponse.builder().token(token).authenticated(true).build();
         } catch (Exception e) {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
     }
-
 
 
     private String generateToken(User user) {
@@ -127,7 +130,6 @@ public class FacebookAuthServiceImpl implements FacebookAuthService {
         stringJoiner.add("ROLE_" + PredefinedRole.USER_ROLE);
         return stringJoiner.toString();
     }
-
 
 
 }

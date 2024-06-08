@@ -1,14 +1,13 @@
 package com.example.shoesstore.dto.response;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class FacebookTokenValidationResponse {
-    private Data data;
-
-    @lombok.Data
-    public static class Data {
-        private boolean isValid;
-        private String user_id;
-    }
+    private boolean isValid;
+    private String user_id;
 }
