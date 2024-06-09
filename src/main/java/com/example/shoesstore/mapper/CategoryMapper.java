@@ -2,10 +2,8 @@ package com.example.shoesstore.mapper;
 
 import com.example.shoesstore.dto.request.CategoryCreateRequest;
 import com.example.shoesstore.dto.request.CategoryUpdateRequest;
-import com.example.shoesstore.dto.request.UserUpdateRequest;
 import com.example.shoesstore.dto.response.CategoryResponse;
 import com.example.shoesstore.entity.Category;
-import com.example.shoesstore.entity.User;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
