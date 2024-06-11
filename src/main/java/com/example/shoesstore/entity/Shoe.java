@@ -5,9 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -30,12 +32,18 @@ public class Shoe {
     private String description;
     @Column(name = "price")
     private Long price;
-    @Column(name = "quantity")
-    private Integer quantity;
     @Column(name = "created_at")
+    @CreationTimestamp
     private Date createdAt;
     @Column(name = "created_by")
     private String createBy;
+
+    @PrePersist
+    public void generateCode(){
+        if(this.code == null || this.code.isEmpty()){
+            this.code = UUID.randomUUID().toString();
+        }
+    }
 
     @OneToMany(mappedBy = "shoe", cascade = CascadeType.ALL)
     private List<ShoeDetail> shoeDetails;
