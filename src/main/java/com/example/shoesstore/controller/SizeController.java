@@ -83,7 +83,6 @@ public class SizeController {
     }
 
     @GetMapping("/filter/{status}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ApiResponse<Page<SizeResponse>> filterStatus(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "5") int size,

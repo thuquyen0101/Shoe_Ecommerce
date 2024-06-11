@@ -23,6 +23,8 @@ public enum ErrorCode {
     COLOR_EXISTED(400, "Color existed", HttpStatus.BAD_REQUEST),
     SIZE_EXISTED(400, "Size existed", HttpStatus.BAD_REQUEST),
     SIZE_NOT_FOUND(404, "Size does not found", HttpStatus.NOT_FOUND),
+    SHOE_EXISTED(400, "Shoe existed", HttpStatus.BAD_REQUEST),
+    SHOE_NOT_FOUND(404, "Shoe does not found", HttpStatus.NOT_FOUND),
 
     ;
 
