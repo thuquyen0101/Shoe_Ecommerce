@@ -24,16 +24,24 @@ import com.example.shoesstore.repository.SizeRepository;
 import com.example.shoesstore.repository.UserRepository;
 import com.example.shoesstore.service.ImageService;
 import com.example.shoesstore.service.ShoeDetailService;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -50,6 +58,7 @@ public class ShoeDetailServiceImpl implements ShoeDetailService {
     ImageRepository imageRepository;
     ImageService imageService;
     ShoeDetailMapper shoeDetailMapper;
+    EntityManager entityManager;
 
     @Override
     public ShoeDetailResponse createShoeDetail(ShoeDetailCreateRequest request) throws IOException {
@@ -122,9 +131,30 @@ public class ShoeDetailServiceImpl implements ShoeDetailService {
 
     @Override
     public Page<ShoeDetailResponse> filter(ShoeDetailSearchRequest request, Pageable pageable) {
-        Page<ShoeDetail> listDetail = shoeDetailRepository.filter(request.getIdShoe(), request.getIdCategory(), request.getIdColor(), request.getIdSize(), request.getPrice(), pageable);
-        return listDetail.map(detail -> shoeDetailMapper.mapToResponse(detail));
+        List<ShoeDetail> shoeDetails =  shoeDetailRepository.findAll();
 
+        if (request.getIdShoe() != null) {
+            shoeDetails.removeIf(shoeDetail -> !shoeDetail.getShoe().getId().equals(request.getIdShoe()));
+        }
+        if (request.getIdCategory() != null) {
+            shoeDetails.removeIf(shoeDetail -> !shoeDetail.getCategory().getId().equals(request.getIdCategory()));
+        }
+        if (request.getIdColor() != null) {
+            shoeDetails.removeIf(shoeDetail -> !shoeDetail.getColor().getId().equals(request.getIdColor()));
+        }
+        if (request.getIdSize() != null) {
+            shoeDetails.removeIf(shoeDetail -> !shoeDetail.getSize().getId().equals(request.getIdSize()));
+        }
+        if (request.getPrice() != null) {
+            shoeDetails.removeIf(shoeDetail -> shoeDetail.getPrice() < 0 || shoeDetail.getPrice() > request.getPrice());
+        }
+
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), shoeDetails.size());
+        Page<ShoeDetail> page = new PageImpl<>(shoeDetails.subList(start, end), pageable, shoeDetails.size());
+
+        return page.map(detail -> shoeDetailMapper.mapToResponse(detail));
     }
+
 
 }
