@@ -7,19 +7,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Date;
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ShoeResponse {
-     Long id;
-     String code;
-     String name;
-     Integer status;
-     String description;
-     Long price;
-     String createBy;
+public class ImageResponse {
+    private Long id;
+    private String imageUrl;
 }

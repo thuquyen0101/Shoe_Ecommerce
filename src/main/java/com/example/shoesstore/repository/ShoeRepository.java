@@ -14,6 +14,7 @@ public interface ShoeRepository extends JpaRepository<Shoe, Long> {
     @Query("SELECT s FROM Shoe s WHERE s.name like:name AND s.status=:status ")
     Page<Shoe> findShoesByStatusAndNameContainsIgnoreCase(@Param("name") String name, @Param("status") Integer status, Pageable pageable);
 
+    @Query("SELECT s FROM Shoe s WHERE s.name like:name ")
     Page<Shoe> findShoesByNameContainsIgnoreCase(@Param("name") String name, Pageable pageable);
 
 

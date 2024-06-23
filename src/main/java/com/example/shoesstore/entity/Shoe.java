@@ -24,7 +24,7 @@ public class Shoe {
     private Long id;
     @Column(name = "code")
     private String code;
-    @Column(name = "name")
+    @Column(name = "name", unique = true)
     private String name;
     @Column(name = "status")
     private Integer status;

@@ -25,6 +25,8 @@ public enum ErrorCode {
     SIZE_NOT_FOUND(404, "Size does not found", HttpStatus.NOT_FOUND),
     SHOE_EXISTED(400, "Shoe existed", HttpStatus.BAD_REQUEST),
     SHOE_NOT_FOUND(404, "Shoe does not found", HttpStatus.NOT_FOUND),
+    IMAGE_NOT_FOUND(404 , "Image not found" , HttpStatus.NOT_FOUND),
+    SHOEDETAIL_NOT_FOUND(404, "Shoe detail does not found", HttpStatus.NOT_FOUND),
 
     ;
 

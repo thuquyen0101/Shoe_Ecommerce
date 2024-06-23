@@ -26,7 +26,7 @@ public class Color {
     @Column(name = "code",unique = true, nullable = false)
     private String code;
 
-    @Column(name = "name")
+    @Column(name = "name", unique = true)
     private String name;
     @Column(name = "status")
     private Integer status;
