@@ -14,7 +14,8 @@ public interface ShoeDetailService {
     ShoeDetailResponse getShoeDetailById(long idShoeDetail);
     Page<ShoeDetailResponse> getAllShoeDetail(int page, int size);
     ShoeDetailResponse updateShoeDetail(long id, ShoeDetailUpdateRequest request) throws IOException;
-
     Page<ShoeDetailResponse> filter(ShoeDetailSearchRequest request, Pageable pageable);
+
+    ShoeDetailResponse changeStatus(long idShoeDetail);
 
 }

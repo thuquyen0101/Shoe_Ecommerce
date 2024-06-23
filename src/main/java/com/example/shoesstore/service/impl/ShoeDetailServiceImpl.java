@@ -127,4 +127,16 @@ public class ShoeDetailServiceImpl implements ShoeDetailService {
 
     }
 
+    @Override
+    public ShoeDetailResponse changeStatus(long idShoeDetail) {
+        ShoeDetail shoeDetail = shoeDetailRepository.findById(idShoeDetail)
+                .orElseThrow(() -> new AppException(ErrorCode.SHOEDETAIL_NOT_FOUND));
+        if (shoeDetail.getStatus().equals(ShoeDetailStatus.ACTIVE)) {
+            shoeDetail.setStatus(ShoeDetailStatus.NO_ACTIVE);
+        } else {
+            shoeDetail.setStatus(ShoeDetailStatus.ACTIVE);
+        }
+        return shoeDetailMapper.mapToResponse(shoeDetailRepository.save(shoeDetail));
+    }
+
 }

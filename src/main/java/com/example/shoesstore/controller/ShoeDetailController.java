@@ -101,4 +101,14 @@ public class ShoeDetailController {
                 .build();
     }
 
+    @PostMapping("/changeStatus/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ApiResponse<ShoeDetailResponse> changeStatus(@PathVariable Long id) {
+        return ApiResponse.<ShoeDetailResponse>builder()
+                .code(CodeStatusConstants.UPDATE)
+                .message("Success")
+                .result(shoeDetailService.changeStatus(id))
+                .build();
+    }
+
 }
