@@ -10,6 +10,11 @@ public class EndPoints {
             "/api/v1/auth/logout",
             "/api/v1/auth/introspect",
             "/api/v1/auth/facebook-login",
-            "/api/v1/auth/google-login"
+            "/api/v1/auth/google-login",
+            "/swagger-ui"
+    };
+
+    public static final String[] PUBLIC_GET_ENDPOINTS = {
+            "/swagger-ui"
     };
 }
