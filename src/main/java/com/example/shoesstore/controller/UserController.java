@@ -25,7 +25,6 @@ public class UserController {
     UserService userService;
 
     @PostMapping("/create")
-    @PreAuthorize("hasRole('ADMIN')")
     public ApiResponse<UserResponse> createUser(@RequestBody @Valid UserCreateRequest userCreateRequest) {
         return ApiResponse.<UserResponse>builder()
                 .code(CodeStatusConstants.OK)

@@ -1,5 +1,6 @@
 package com.example.shoesstore.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,7 +25,7 @@ public class Shoe {
     private Long id;
     @Column(name = "code")
     private String code;
-    @Column(name = "name")
+    @Column(name = "name", unique = true)
     private String name;
     @Column(name = "status")
     private Integer status;
@@ -46,6 +47,7 @@ public class Shoe {
     }
 
     @OneToMany(mappedBy = "shoe", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<ShoeDetail> shoeDetails;
 
 }

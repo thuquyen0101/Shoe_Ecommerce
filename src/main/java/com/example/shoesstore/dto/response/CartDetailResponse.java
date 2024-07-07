@@ -1,4 +1,4 @@
-package com.example.shoesstore.dto.request;
+package com.example.shoesstore.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,8 +9,11 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-public class ColorCreateRequest {
-    String name;
-    Long createdBy;
+public class CartDetailResponse {
+    Long id;
+    Integer quantity;
+//    ShoeDetailResponse shoeDetail;
+//    CartResponse cart;
+    Long idShoeDetail;
 
 }
