@@ -10,9 +10,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class ColorCreateRequest {
-
-        String name;
-
-        Long createdBy;
+    String name;
+    Long createdBy;
 
 }

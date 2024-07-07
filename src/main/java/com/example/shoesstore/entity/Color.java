@@ -1,5 +1,6 @@
 package com.example.shoesstore.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,7 +27,7 @@ public class Color {
     @Column(name = "code",unique = true, nullable = false)
     private String code;
 
-    @Column(name = "name")
+    @Column(name = "name", unique = true)
     private String name;
     @Column(name = "status")
     private Integer status;
@@ -38,6 +39,7 @@ public class Color {
     private String createdBy;
 
     @OneToMany(mappedBy = "color", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<ShoeDetail> shoeDetails;
 
     @PrePersist
