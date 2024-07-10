@@ -5,11 +5,13 @@ import com.example.shoesstore.constant.UserStatusConstant;
 import com.example.shoesstore.dto.request.UserCreateRequest;
 import com.example.shoesstore.dto.request.UserUpdateRequest;
 import com.example.shoesstore.dto.response.UserResponse;
+import com.example.shoesstore.entity.Cart;
 import com.example.shoesstore.entity.Role;
 import com.example.shoesstore.entity.User;
 import com.example.shoesstore.exception.AppException;
 import com.example.shoesstore.exception.ErrorCode;
 import com.example.shoesstore.mapper.UserMapper;
+import com.example.shoesstore.repository.CartRepository;
 import com.example.shoesstore.repository.RoleRepository;
 import com.example.shoesstore.repository.UserRepository;
 import com.example.shoesstore.service.UserService;
@@ -33,6 +35,7 @@ public class UserServiceImpl implements UserService {
     RoleRepository roleRepository;
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
+    CartRepository cartRepository;
 
     @Override
     public UserResponse createUser(UserCreateRequest userCreateRequest) {
@@ -46,6 +49,11 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(roles);
         user.setStatus(UserStatusConstant.ACTIVE);
+
+        Cart cart = new Cart();
+        cart.setUsers(user);
+        cartRepository.save(cart);
+
         return userMapper.toResponse(userRepository.save(user));
     }
 

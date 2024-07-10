@@ -30,7 +30,7 @@ public class ImageServiceImpl implements ImageService {
     ImageRepository imageRepository;
     String serveImageURL;
     String serverURL;
-    private static final Path IMG_PATH = Paths.get("/images");
+    private static final Path IMG_PATH = Paths.get("src/images");
 
     @Override
     public String uploadImage(MultipartFile file) throws IOException {
@@ -51,6 +51,7 @@ public class ImageServiceImpl implements ImageService {
             image1.setImageUrl(code);
             image1.setStatus(1);
 //            imageRepository.save(image1);
+            log.info("IMAGE PATH {}" , IMG_PATH);
             log.info("serverURL " + serverURL);
             log.info("serveImageURL " + serveImageURL);
             log.info("code " + code);

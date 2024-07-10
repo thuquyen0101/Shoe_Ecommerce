@@ -1,5 +1,6 @@
 package com.example.shoesstore.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -60,5 +61,7 @@ public class User {
             cascade = CascadeType.ALL)
     private List<Order> orders;
 
-
+    @OneToOne(mappedBy = "users")
+    @JsonBackReference
+    private Cart cart;
 }

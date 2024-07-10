@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Date;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -26,4 +28,5 @@ public class ShoeDetailResponse {
     SizeResponse size;
     ImageResponse image;
     String createdBy;
+    Date createdAt;
 }

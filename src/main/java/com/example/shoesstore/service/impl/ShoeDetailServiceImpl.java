@@ -25,9 +25,6 @@ import com.example.shoesstore.repository.UserRepository;
 import com.example.shoesstore.service.ImageService;
 import com.example.shoesstore.service.ShoeDetailService;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -39,10 +36,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -129,9 +125,11 @@ public class ShoeDetailServiceImpl implements ShoeDetailService {
         return shoeDetailMapper.mapToResponse(shoeDetailRepository.save(shoeDetail));
     }
 
+    // sắp xếp theo giá, tìm theo khoảng giá; tìm, sx theo tên;
+    // lọc khoảng ngày, tìm theo ngày mới nhất, cũ nhất
     @Override
     public Page<ShoeDetailResponse> filter(ShoeDetailSearchRequest request, Pageable pageable) {
-        List<ShoeDetail> shoeDetails =  shoeDetailRepository.findAll();
+        List<ShoeDetail> shoeDetails = shoeDetailRepository.findAll();
 
         if (request.getIdShoe() != null) {
             shoeDetails.removeIf(shoeDetail -> !shoeDetail.getShoe().getId().equals(request.getIdShoe()));
@@ -145,8 +143,94 @@ public class ShoeDetailServiceImpl implements ShoeDetailService {
         if (request.getIdSize() != null) {
             shoeDetails.removeIf(shoeDetail -> !shoeDetail.getSize().getId().equals(request.getIdSize()));
         }
-        if (request.getPrice() != null) {
-            shoeDetails.removeIf(shoeDetail -> shoeDetail.getPrice() < 0 || shoeDetail.getPrice() > request.getPrice());
+
+        // sắp xếp giá
+        if (request.getArrangePrice() != null) {
+            // tăng dần
+            if (request.getArrangePrice() == true) {
+                shoeDetails = shoeDetails.stream()
+                        .sorted((x, y) -> x.getPrice().compareTo(y.getPrice()))
+                        .collect(Collectors.toList());
+            } else {
+                // giảm dần
+                shoeDetails = shoeDetails.stream()
+                        .sorted((x, y) -> -x.getPrice().compareTo(y.getPrice()))
+                        .collect(Collectors.toList());
+            }
+        }
+
+        // lọc khoảng giá
+        if (request.getMinPrice() != null && request.getMaxPrice() != null) {
+             shoeDetails = shoeDetails.stream().filter(shoeDetail -> shoeDetail.getPrice() >= request.getMinPrice() && shoeDetail.getPrice() <= request.getMaxPrice())
+                    .collect(Collectors.toList());
+        }
+
+        // lọc khi chỉ có giá min
+        if (request.getMinPrice() != null && request.getMaxPrice() == null) {
+            shoeDetails.removeIf(shoeDetail -> shoeDetail.getPrice() < request.getMinPrice());
+        }
+
+        // lọc khi chỉ có giá max
+        if (request.getMinPrice() == null && request.getMaxPrice() != null) {
+            shoeDetails.removeIf(shoeDetail -> shoeDetail.getPrice() > request.getMaxPrice());
+        }
+
+        // tìm theo tên
+        if (request.getName() != null) {
+            shoeDetails.removeIf(shoeDetail -> !shoeDetail.getShoe().getName().contains(request.getName()));
+        }
+
+        // sx theo tên
+        if (request.getArrangeName() != null) {
+            if (request.getArrangeName() == true) {
+                // z -> a
+                shoeDetails = shoeDetails.stream()
+                        .sorted((x, y) -> -x.getShoe().getName().compareTo(y.getShoe().getName()))
+                        .collect(Collectors.toList())
+                ;
+            } else if (request.getArrangeName() == false) {
+                // a -> z
+                shoeDetails = shoeDetails.stream()
+                        .sorted((x, y) -> x.getShoe().getName().compareTo(y.getShoe().getName()))
+                        .collect(Collectors.toList())
+                ;
+            }
+        }
+
+        // sắp xếp ngày
+        if (request.getArrangeDate() != null) {
+            if (request.getArrangeDate() == true) {
+                // giảm dần
+                shoeDetails = shoeDetails.stream()
+                        .sorted((x, y) -> -x.getCreatedAt().compareTo(y.getCreatedAt()))
+                        .collect(Collectors.toList())
+                ;
+            } else if (request.getArrangeDate() == false) {
+                // tăng dần
+                shoeDetails = shoeDetails.stream()
+                        .sorted((x, y) -> x.getCreatedAt().compareTo(y.getCreatedAt()))
+                        .collect(Collectors.toList())
+                ;
+            }
+        }
+
+        // lọc khoảng ngày
+        if (request.getMinDate() != null && request.getMaxDate() != null) {
+            shoeDetails = shoeDetails.stream().filter(shoeDetail -> shoeDetail.getCreatedAt().after(request.getMinDate())
+                            && shoeDetail.getCreatedAt().before(request.getMaxDate()))
+                    .collect(Collectors.toList());
+        }
+
+        // lọc khi chỉ có ngày min
+        if (request.getMinDate() != null && request.getMaxDate() == null) {
+            shoeDetails = shoeDetails.stream().filter(shoeDetail -> shoeDetail.getCreatedAt().after(request.getMinDate()))
+                    .collect(Collectors.toList());
+        }
+
+        // lọc khi chỉ có ngày max
+        if (request.getMaxDate() != null && request.getMinDate() == null) {
+            shoeDetails = shoeDetails.stream().filter(shoeDetail -> shoeDetail.getCreatedAt().before(request.getMaxDate()))
+                    .collect(Collectors.toList());
         }
 
         int start = (int) pageable.getOffset();
@@ -154,6 +238,18 @@ public class ShoeDetailServiceImpl implements ShoeDetailService {
         Page<ShoeDetail> page = new PageImpl<>(shoeDetails.subList(start, end), pageable, shoeDetails.size());
 
         return page.map(detail -> shoeDetailMapper.mapToResponse(detail));
+    }
+
+    @Override
+    public ShoeDetailResponse changeStatus(long idShoeDetail) {
+        ShoeDetail shoeDetail = shoeDetailRepository.findById(idShoeDetail)
+                .orElseThrow(() -> new AppException(ErrorCode.SHOEDETAIL_NOT_FOUND));
+        if (shoeDetail.getStatus().equals(ShoeDetailStatus.ACTIVE)) {
+            shoeDetail.setStatus(ShoeDetailStatus.NO_ACTIVE);
+        } else {
+            shoeDetail.setStatus(ShoeDetailStatus.ACTIVE);
+        }
+        return shoeDetailMapper.mapToResponse(shoeDetailRepository.save(shoeDetail));
     }
 
 
