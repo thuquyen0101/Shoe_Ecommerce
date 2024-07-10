@@ -25,8 +25,13 @@ public class User {
     private String username;
     @Column(name = "password")
     private String password;
+
+    @Column(name = "avatar" , columnDefinition = "TEXT")
+    private String urlAvatar;
+
     @Column(name = "gender")
     private Boolean gender;
+
     @Column(name = "status")
     private Integer status;
     @Column(name = "address")

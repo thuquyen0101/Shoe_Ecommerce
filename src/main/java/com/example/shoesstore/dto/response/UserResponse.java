@@ -17,5 +17,6 @@ public class UserResponse {
     Boolean gender;
     Integer status;
     String address;
+    String urlAvatar;
     private List<String> roleNames;
 }
