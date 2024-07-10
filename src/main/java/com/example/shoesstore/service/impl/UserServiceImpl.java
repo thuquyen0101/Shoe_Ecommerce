@@ -92,6 +92,7 @@ public class UserServiceImpl implements UserService {
         String name = context.getAuthentication().getName();
         User user = userRepository.findByUsername(name)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_EXISTED));
+        user.setUrlAvatar(user.getUrlAvatar());
         return userMapper.toResponse(user);
     }
 

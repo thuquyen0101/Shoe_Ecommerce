@@ -13,7 +13,6 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
@@ -77,14 +76,10 @@ public class AuthenticationController {
     @PostMapping("/google-login")
     ApiResponse<AuthenticationResponse> outboundAuthenticate(
             @RequestParam("code") String code
-    ){
+    ) {
         var result = googleAuthService.authenticateGoogleUser(code);
         return ApiResponse.<AuthenticationResponse>builder().result(result).build();
     }
-
-
-
-
 
 
 }

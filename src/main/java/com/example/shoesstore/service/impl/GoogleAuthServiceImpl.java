@@ -76,7 +76,7 @@ public class GoogleAuthServiceImpl implements GoogleAuthService {
 
         var userInfo = googleUserClient.getUserInfo("json", response.getAccessToken());
 
-        log.info("User Info {}", userInfo);
+        log.info("User Info {}", userInfo.getPicture());
 
         List<Role> roles = new ArrayList<>();
         roles.add(Role.builder().roleName(PredefinedRole.USER_ROLE).build());
@@ -86,6 +86,7 @@ public class GoogleAuthServiceImpl implements GoogleAuthService {
                         .username(userInfo.getEmail())
                         .name(userInfo.getName())
                         .roles(roles)
+                        .urlAvatar(userInfo.getPicture())
                         .gg_account(userInfo.getId())
                         .build()));
 
