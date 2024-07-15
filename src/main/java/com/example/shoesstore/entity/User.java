@@ -27,7 +27,7 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "avatar" , columnDefinition = "TEXT")
+    @Column(name = "avatar", columnDefinition = "TEXT")
     private String urlAvatar;
 
     @Column(name = "gender")
@@ -38,27 +38,20 @@ public class User {
     @Column(name = "address")
     private String address;
     @Column(name = "fb_account")
-    private String fb_account;
+    private String facebookAccount;
     @Column(name = "gg_account")
-    private String gg_account;
+    private String googleAccount;
     @Column(name = "created_at")
     @CreationTimestamp
     private Date createdAt;
     @Column(name = "created_by")
     private String createdBy;
 
-    @ManyToMany( cascade = {
-            CascadeType.DETACH, CascadeType.MERGE,
-            CascadeType.PERSIST, CascadeType.REFRESH
-    })
-    @JoinTable(name = "user_role",
-            joinColumns = {@JoinColumn(name = "id_user")},
-            inverseJoinColumns = {@JoinColumn(name = "id_role")}
-    )
+    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinTable(name = "user_role", joinColumns = {@JoinColumn(name = "id_user")}, inverseJoinColumns = {@JoinColumn(name = "id_role")})
     private List<Role> roles;
 
-    @OneToMany(mappedBy = "users",fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Order> orders;
 
     @OneToOne(mappedBy = "users")

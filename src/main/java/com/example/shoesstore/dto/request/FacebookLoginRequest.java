@@ -1,15 +1,17 @@
 package com.example.shoesstore.dto.request;
 
-import com.example.shoesstore.dto.response.FacebookProfileResponse;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class FacebookLoginRequest {
-    private String accessToken;
-    private String userID;
-    private FacebookProfileResponse profile;
+        private String client_id;
+        private String redirect_uri;
+        private String client_secret;
+        private String code;
 }

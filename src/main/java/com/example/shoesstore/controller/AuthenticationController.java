@@ -66,7 +66,7 @@ public class AuthenticationController {
 
     @PostMapping("/facebook-login")
     public ApiResponse<AuthenticationResponse> facebookLogin(@RequestBody FacebookLoginRequest facebookLoginRequest) {
-        AuthenticationResponse response = facebookAuthService.authenticateFacebookUser(facebookLoginRequest);
+        AuthenticationResponse response = facebookAuthService.authenticateFacebookUser(facebookLoginRequest.getCode());
         return ApiResponse.<AuthenticationResponse>builder()
                 .code(CodeStatusConstants.OK)
                 .result(response)

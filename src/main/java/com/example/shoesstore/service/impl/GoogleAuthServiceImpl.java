@@ -63,7 +63,7 @@ public class GoogleAuthServiceImpl implements GoogleAuthService {
 
 
     @Override
-    public AuthenticationResponse authenticateGoogleUser(String code){
+    public AuthenticationResponse authenticateGoogleUser(String code) {
         var response = googleIdentityClient.exchangeToken(GoogleLoginRequest.builder()
                 .code(code)
                 .clientId(CLIENT_ID)
@@ -78,25 +78,60 @@ public class GoogleAuthServiceImpl implements GoogleAuthService {
 
         log.info("User Info {}", userInfo.getPicture());
 
-        List<Role> roles = new ArrayList<>();
-        roles.add(Role.builder().roleName(PredefinedRole.USER_ROLE).build());
+        Optional<User> existingUser = userRepository.findByGoogleAccount(userInfo.getId());
 
-        var user = userRepository.findByUsername(userInfo.getEmail()).orElseGet(
-                () -> userRepository.save(User.builder()
+        if (existingUser.isPresent()) {
+            User userToUpdate = existingUser.get();
+            userToUpdate.setName(userInfo.getName());
+            userToUpdate.setUrlAvatar(userInfo.getPicture());
+            userRepository.save(userToUpdate);
+
+            var token = generateToken(userToUpdate);
+
+            return AuthenticationResponse.builder()
+                    .authenticated(true)
+                    .token(token)
+                    .build();
+        } else {
+            Optional<User> existingUserByEmail = userRepository.findByUsername(userInfo.getEmail());
+
+            if (existingUserByEmail.isPresent()) {
+                User userToUpdate = existingUserByEmail.get();
+                userToUpdate.setName(userInfo.getName());
+                userToUpdate.setUrlAvatar(userInfo.getPicture());
+                userToUpdate.setGoogleAccount(userInfo.getId());
+                userRepository.save(userToUpdate);
+
+                var token = generateToken(userToUpdate);
+
+                return AuthenticationResponse.builder()
+                        .authenticated(true)
+                        .token(token)
+                        .build();
+            } else {
+                List<Role> roles = new ArrayList<>();
+                roles.add(Role.builder().roleName(PredefinedRole.USER_ROLE).build());
+
+                User newUser = User.builder()
                         .username(userInfo.getEmail())
                         .name(userInfo.getName())
                         .roles(roles)
                         .urlAvatar(userInfo.getPicture())
-                        .gg_account(userInfo.getId())
-                        .build()));
+                        .googleAccount(userInfo.getId())
+                        .build();
 
-        var token = generateToken(user);
+                userRepository.save(newUser);
 
-        return AuthenticationResponse.builder()
-                .authenticated(true)
-                .token(token)
-                .build();
+                var token = generateToken(newUser);
+
+                return AuthenticationResponse.builder()
+                        .authenticated(true)
+                        .token(token)
+                        .build();
+            }
+        }
     }
+
 
 
     private String generateToken(User user) {
